@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Portofolio Hawwin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Three.js -->
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+
+  <!-- Motion One -->
+  <script src="https://unpkg.com/@motionone/dom/dist/motion.min.js"></script>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    body {
+      font-family: "Inter", sans-serif;
+    }
+
+    html {
+    scroll-behavior: smooth;
+    }
+
+    /* HERO DIAGONAL */
+    .hero-diagonal {
+      clip-path: polygon(0 0, 65% 0, 45% 100%, 0% 100%);
+    }
+
+    .tech-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      color: #111;
+    }
+
+    .tech-item img {
+      width: 34px;
+      height: 34px;
+    }
+
+    .project-card {
+      padding: 2rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 1rem;
+      transition: 0.3s;
+    }
+
+    .tech-item {
+    transition: 0.25s ease;
+    }
+
+    .tech-item:hover {
+    transform: translateY(-2px);
+    }
+
+    /* Modal styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      max-width: 90%;
+      max-height: 90vh;
+      position: relative;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.active .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-content img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .close-modal {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    .project-image-container {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .view-full-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      color: white;
+      font-weight: 500;
+      font-size: 14px;
+      gap: 8px;
+    }
+
+    .project-image-container:hover .view-full-overlay {
+      opacity: 1;
+    }
+
+    /* Fallback image */
+    .project-fallback {
+      width: 100%;
+      height: 192px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-weight: 600;
+    }
+
+  </style>
+</head>
+
+<body class="bg-gray-100 text-gray-900 overflow-x-hidden">
+
+<!-- ================= NAVBAR ================= -->
+<nav class="relative z-50 flex justify-between items-center px-6 md:px-16 py-6">
+  <h1 class="font-semibold text-lg">Portfolio</h1>
+
+  <!-- Hamburger -->
+  <button
+    id="nav-toggle"
+    class="md:hidden text-2xl focus:outline-none"
+    aria-label="Toggle navigation"
+  >
+    ☰
+  </button>
+
+  <!-- Menu -->
+  <ul
+    id="nav-menu"
+    class="hidden md:flex gap-6 text-sm text-gray-600
+           absolute md:static
+           top-full right-6 md:right-auto
+           bg-white md:bg-transparent
+           shadow-xl md:shadow-none
+           rounded-2xl md:rounded-none
+           p-6 md:p-0
+           flex-col md:flex-row"
+  >
+    <li><a href="#about" class="hover:text-black block">About</a></li>
+    <li><a href="#stack" class="hover:text-black block">Tech</a></li>
+    <li><a href="#work" class="hover:text-black block">Portfolio</a></li>
+    <li><a href="#contact" class="hover:text-black block">Connect</a></li>
+  </ul>
+</nav>
+
+<!-- ================= HERO ================= -->
+<section class="flex justify-center py-6 md:py-10">
+  <div
+    id="hero-card"
+    class="relative bg-white rounded-[32px] shadow-xl
+           w-[92%] max-w-6xl
+           p-8 md:p-16
+           flex flex-col lg:flex-row
+           items-center gap-10 lg:gap-16 overflow-hidden"
+  >
+
+    <!-- DIAGONAL BLUE -->
+    <div class="absolute inset-0 z-0 bg-gradient-to-br from-sky-300 via-sky-200 to-transparent hero-diagonal"></div>
+
+    <!-- PHOTO -->
+    <div class="w-full lg:w-1/3 z-10">
+    <img
+        src="assets/hawwin.png"
+        alt="Hawwin Romadhon"
+        class="rounded-2xl -translate-y-4 md:-translate-y-11 grayscale hover:grayscale-0 transition duration-500 mx-auto"
+    />
+    </div>
+
+
+    <!-- TEXT -->
+    <div id="hero-text" class="text-center lg:text-left z-10">
+      <span class="text-sm text-gray-500 uppercase tracking-wide">
+        Frontend Developer
+      </span>
+
+      <h1 class="text-4xl md:text-5xl font-bold mt-2 mb-6 leading-tight">
+        Hawwin <br class="hidden md:block" /> Romadhon
+      </h1>
+
+      <p class="text-gray-600 max-w-md mx-auto lg:mx-0 leading-relaxed mb-8">
+        Mahasiswa Teknik Informatika yang fokus membangun antarmuka web modern,
+        interaktif, dan berorientasi pada pengalaman pengguna.
+      </p>
+
+      <div class="flex flex-wrap justify-center lg:justify-start gap-4">
+        <button onclick="scrollToSection('work')" class="px-8 py-3 rounded-full bg-gray-900 text-white hover:bg-gray-800 transition">
+          View Portfolio
+        </button>
+
+        <button onclick="scrollToSection('contact')" class="px-8 py-3 rounded-full border border-gray-300 hover:border-gray-900 transition">
+          Contact
+        </button>
+      </div>
+    </div>
+
+    <!-- 3D -->
+    <div id="hero-3d" class="absolute right-6 top-1/2 -translate-y-1/2 w-[260px] h-[260px] opacity-80 hidden lg:block z-10">
+      <canvas id="three-canvas" class="w-full h-full"></canvas>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section id="about" class="flex justify-center py-20">
+  <div class="bg-white rounded-[32px] shadow-xl w-[92%] max-w-6xl p-12 md:p-16">
+    <h2 class="text-3xl font-bold mb-6">About Me</h2>
+    <p class="text-gray-600 max-w-3xl">
+      Saya berfokus pada pengembangan UI yang bersih, intuitif, dan efisien.
+      ChatGPT digunakan sebagai asisten teknis, namun keputusan arsitektur dan implementasi akhir saya kerjakan sendiri.
+    </p>
+  </div>
+</section>
+
+<!-- ================= TECH STACK ================= -->
+<section id="stack" class="flex justify-center py-24">
+  <div class="bg-white rounded-[32px] shadow-xl w-[92%] max-w-6xl px-10 md:px-16 py-14">
+
+    <h2 class="text-3xl font-bold mb-12">Tech Stack</h2>
+
+    <!-- ONE GRID – SAME LAYOUT -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-y-8 gap-x-6">
+
+      <div class="tech-item">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg">
+        JavaScript
+      </div>
+
+      <div class="tech-item">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg">
+        TypeScript
+      </div>
+
+      <div class="tech-item">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg">
+        PHP
+      </div>
+
+      <div class="tech-item">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg">
+        React
+      </div>
+
+      <div class="tech-item">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg">
+        Laravel
+      </div>
+
+      <div class="tech-item">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg">
+        Node.js
+      </div>
+
+      <div class="tech-item">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg">
+        MySQL
+      </div>
+
+      <div class="tech-item">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg">
+        PostgreSQL
+      </div>
+
+      <div class="tech-item">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg">
+        Google Cloud
+      </div>
+
+      <div class="tech-item">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg">
+        GitHub
+      </div>
+
+      <div class="tech-item">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg">
+        VS Code
+      </div>
+
+      <div class="tech-item">
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/discord.svg">
+        Discord
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= PORTFOLIO ================= -->
+<section id="work" class="flex justify-center py-20">
+  <div class="bg-white rounded-[32px] shadow-xl w-[92%] max-w-6xl p-12 md:p-16">
+    <h2 class="text-3xl font-bold mb-10">Portfolio</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+      <!-- ================= PROJECT 1 ================= -->
+      <div class="bg-white rounded-2xl border shadow-sm hover:shadow-lg transition overflow-hidden flex flex-col h-full">
+
+        <!-- IMAGE -->
+        <div
+          class="relative cursor-pointer"
+          onclick="openModal(this.querySelector('img').dataset.full)"
+        >
+          <img
+            src="assets/portofolio-1.png"
+            alt="Feinime - Anime Platform"
+            class="w-full h-48 object-cover"
+            loading="lazy"
+            data-full="assets/portofolio-1.png"
+          />
+
+          <!-- Overlay -->
+          <div class="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition
+                      flex items-center justify-center gap-2 text-white text-sm font-medium">
+            View Full Image
+          </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="p-6 flex flex-col flex-1">
+          <h3 class="font-semibold text-lg mb-1">
+            <a href="https://feinime.vercel.app" target="_blank" class="hover:underline">
+              Feinime
+            </a>
+          </h3>
+
+          <p class="text-sm text-gray-600 mb-3 line-clamp-3">
+            Feinime V2 adalah platform website anime modern yang menampilkan data anime secara real-time
+            dengan pengalaman pengguna yang mulus dan performa tinggi.
+          </p>
+
+          <!-- TECH STACK -->
+          <div class="flex gap-2 flex-wrap mt-3 mb-4">
+            <span class="text-xs bg-black text-white px-2 py-1 rounded">Next.js 13+</span>
+            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">React 18</span>
+            <span class="text-xs bg-sky-100 text-sky-800 px-2 py-1 rounded">TailwindCSS</span>
+            <span class="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded">shadcn/ui</span>
+            <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">TypeScript</span>
+            <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Lucide React</span>
+          </div>
+
+          <!-- CTA -->
+          <a
+            href="https://feinime.vercel.app"
+            target="_blank"
+            class="mt-auto text-sm font-medium text-blue-600 hover:underline"
+          >
+            Visit Website →
+          </a>
+        </div>
+      </div>
+
+      <!-- ================= PROJECT 2 ================= -->
+      <div class="bg-white rounded-2xl border shadow-sm hover:shadow-lg transition overflow-hidden flex flex-col h-full">
+
+        <div
+          class="relative cursor-pointer"
+          onclick="openModal(this.querySelector('img').dataset.full)"
+        >
+          <img
+            src="assets/portofolio-2.png"
+            alt="Tensai AI Chatbot"
+            class="w-full h-48 object-cover"
+            loading="lazy"
+            data-full="assets/portofolio-2.png"
+          />
+
+          <div class="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition
+                      flex items-center justify-center text-white text-sm font-medium">
+            View Full Image
+          </div>
+        </div>
+
+        <div class="p-6 flex flex-col flex-1">
+          <h3 class="font-semibold text-lg mb-1">
+            <a href="https://tensai-ai.vercel.app" target="_blank" class="hover:underline">
+              Tensai AI Chat Bot
+            </a>
+          </h3>
+
+          <p class="text-sm text-gray-600 mb-3 line-clamp-3">
+            Tensai AI adalah aplikasi web chatbot modern berbasis React + Vite
+            dengan Serverless API dan integrasi OpenRouter AI.
+          </p>
+
+          <div class="flex gap-2 flex-wrap mt-3 mb-4">
+            <span class="text-xs bg-sky-100 text-sky-800 px-2 py-1 rounded">React</span>
+            <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Vite</span>
+            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">TypeScript</span>
+            <span class="text-xs bg-cyan-100 text-cyan-800 px-2 py-1 rounded">Tailwind CSS</span>
+            <span class="text-xs bg-black text-white px-2 py-1 rounded">Vercel Serverless</span>
+            <span class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">OpenRouter API</span>
+          </div>
+
+          <a
+            href="https://tensai-ai.vercel.app"
+            target="_blank"
+            class="mt-auto text-sm font-medium text-blue-600 hover:underline"
+          >
+            Visit Website →
+          </a>
+        </div>
+      </div>
+
+      <!-- ================= PROJECT 3 ================= -->
+      <div class="bg-white rounded-2xl border shadow-sm hover:shadow-lg transition overflow-hidden flex flex-col h-full">
+
+        <div
+          class="relative cursor-pointer"
+          onclick="openModal(this.querySelector('img').dataset.full)"
+        >
+          <img
+            src="assets/portofolio-3.png"
+            alt="Toko HP"
+            class="w-full h-48 object-cover"
+            loading="lazy"
+            data-full="assets/portofolio-3.png"
+          />
+
+          <div class="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition
+                      flex items-center justify-center text-white text-sm font-medium">
+            View Full Image
+          </div>
+        </div>
+
+        <div class="p-6 flex flex-col flex-1">
+          <h3 class="font-semibold text-lg mb-1">
+            <a href="https://project.silverwolf.web.id/" target="_blank" class="hover:underline">
+              Toko HP
+            </a>
+          </h3>
+
+          <p class="text-sm text-gray-600 mb-3 line-clamp-3">
+            Website toko HP dengan fokus eksplorasi frontend, animasi interaktif,
+            dan rendering grafis modern menggunakan data dummy.
+          </p>
+
+          <div class="flex gap-2 flex-wrap mt-3 mb-4">
+            <span class="text-xs bg-sky-100 text-sky-800 px-2 py-1 rounded">React</span>
+            <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Vite</span>
+            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">TypeScript</span>
+            <span class="text-xs bg-cyan-100 text-cyan-800 px-2 py-1 rounded">Tailwind CSS</span>
+            <span class="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded">Lucide Icons</span>
+          </div>
+
+          <a
+            href="https://project.silverwolf.web.id/"
+            target="_blank"
+            class="mt-auto text-sm font-medium text-blue-600 hover:underline"
+          >
+            Visit Website →
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ================= CONTACT ================= -->
+<section id="contact" class="flex justify-center py-20">
+  <div class="bg-white rounded-[32px] shadow-xl w-[92%] max-w-6xl p-12 md:p-16">
+    <h2 class="text-3xl font-bold mb-8">Connect With Me</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+      <!-- GitHub -->
+      <a
+        href="https://github.com/hawwinrmdhn67"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="tech-item hover:underline hover:text-black transition"
+      >
+        <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+          alt="GitHub"
+        >
+        github.com/hawwinrmdhn67
+      </a>
+
+      <!-- Email -->
+      <a
+        href="mailto:hawwinx@gmail.com"
+        class="tech-item hover:underline hover:text-black transition"
+      >
+        <img
+          src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/gmail.svg"
+          alt="Email"
+        >
+        hawwinx@gmail.com
+      </a>
+
+      <!-- LinkedIn -->
+      <a
+        href="https://www.linkedin.com/in/hawwinrmdhn"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="tech-item hover:underline hover:text-black transition"
+      >
+        <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg"
+          alt="LinkedIn"
+        >
+        linkedin.com/in/hawwinrmdhn
+      </a>
+
+      <!-- Instagram -->
+      <a
+        href="https://www.instagram.com/winn.tsx"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="tech-item hover:underline hover:text-black transition"
+      >
+        <img
+          src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/instagram.svg"
+          alt="Instagram"
+        >
+        instagram.com/winn.tsx
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= MODAL ================= -->
+<div class="modal-overlay" id="imageModal">
+  <div class="modal-content">
+    <button class="close-modal" id="closeModal">×</button>
+    <img id="modalImage" src="" alt="Full size project image">
+  </div>
+</div>
+
+<!-- ================= JS ================= -->
+<script>
+  // Image error handler
+  function handleImageError(img, projectName) {
+    const fallbackColors = [
+      'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+      'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+    ];
+    
+    const randomColor = fallbackColors[Math.floor(Math.random() * fallbackColors.length)];
+    
+    const parent = img.parentElement;
+    parent.innerHTML = `
+      <div class="project-fallback" style="background: ${randomColor};">
+        <div class="text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+          <p class="mt-2">${projectName}</p>
+          <p class="text-sm opacity-80 mt-1">Click to view details</p>
+        </div>
+      </div>
+    `;
+    
+    // Add click event to fallback
+    parent.addEventListener('click', function(e) {
+      if (!parent.classList.contains('project-image-container')) return;
+      parent.classList.add('project-image-container');
+      openImageModal('', projectName);
+    });
+  }
+
+  // Modal functionality
+  const modal = document.getElementById('imageModal');
+  const modalImage = document.getElementById('modalImage');
+  const closeModal = document.getElementById('closeModal');
+
+  function openImageModal(imageSrc, altText) {
+    if (imageSrc) {
+      modalImage.src = imageSrc;
+    }
+    modalImage.alt = altText || 'Project Image';
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeImageModal() {
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+
+  // Add click events to all project images
+  document.addEventListener('DOMContentLoaded', function() {
+    const projectImages = document.querySelectorAll('.project-image-container');
+    
+    projectImages.forEach(container => {
+      container.addEventListener('click', function(e) {
+        const img = this.querySelector('img');
+        if (img && img.src && !img.src.includes('data:image')) {
+          const fullSizeSrc = img.getAttribute('data-full') || img.src;
+          openImageModal(fullSizeSrc, img.alt);
+        } else {
+          const projectName = this.closest('.rounded-2xl').querySelector('h3').textContent;
+          openImageModal('', projectName);
+        }
+      });
+    });
+
+    // Close modal events
+    closeModal.addEventListener('click', closeImageModal);
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        closeImageModal();
+      }
+    });
+
+    // Close with Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeImageModal();
+      }
+    });
+  });
+
+  // Navigation and animations
+  function scrollToSection(id) {
+    document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+  }
+
+  const navToggle = document.getElementById("nav-toggle");
+  const navMenu = document.getElementById("nav-menu");
+
+  navToggle.addEventListener("click", () => {
+    navMenu.classList.toggle("hidden");
+  });
+
+  navMenu.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", e => {
+      e.preventDefault();
+      const targetId = link.getAttribute("href").replace("#", "");
+      const targetEl = document.getElementById(targetId);
+      targetEl.scrollIntoView({ behavior: "smooth" });
+      navMenu.classList.add("hidden");
+    });
+  });
+
+  const { animate, stagger } = window.motion;
+
+  animate("#hero-card", { opacity: [0, 1], y: [40, 0] }, { duration: 0.8 });
+  animate("#hero-text > *", { opacity: [0, 1], y: [20, 0] }, {
+    delay: stagger(0.1),
+    duration: 0.6
+  });
+
+  // Preload images to prevent flickering
+  window.addEventListener('load', function() {
+    const images = document.querySelectorAll('.project-image-container img');
+    images.forEach(img => {
+      if (img.complete && img.naturalHeight === 0) {
+        const projectName = img.alt.split('-')[0] || 'Project';
+        handleImageError(img, projectName);
+      }
+    });
+  });
+</script>
+
+<!-- ================= THREE.JS ================= -->
+<script>
+  const canvas = document.getElementById("three-canvas");
+  if (canvas) {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+
+    renderer.setSize(260, 260);
+    renderer.setPixelRatio(window.devicePixelRatio);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+    const light = new THREE.PointLight(0xffffff, 1);
+    light.position.set(5, 5, 5);
+    scene.add(light);
+
+    const material = new THREE.MeshStandardMaterial({
+      color: 0x61dafb,
+      metalness: 0.5,
+      roughness: 0.3
+    });
+
+    const logo = new THREE.Group();
+    const ring = r => {
+      const g = new THREE.TorusGeometry(2, 0.15, 16, 100);
+      const m = new THREE.Mesh(g, material);
+      m.rotation.set(...r);
+      return m;
+    };
+
+    logo.add(ring([0, 0, 0]));
+    logo.add(ring([Math.PI / 2, 0, 0]));
+    logo.add(ring([0, Math.PI / 2, 0]));
+    logo.add(new THREE.Mesh(new THREE.SphereGeometry(0.35, 32, 32), material));
+
+    scene.add(logo);
+    camera.position.z = 6;
+
+    function loop() {
+      requestAnimationFrame(loop);
+      logo.rotation.y += 0.008;
+      logo.rotation.x += 0.004;
+      renderer.render(scene, camera);
+    }
+    loop();
+  }
+</script>
+
+</body>
+</html>
